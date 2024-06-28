@@ -3,28 +3,27 @@ import axios from "axios";
 import apiKeys from "./apiKeys";
 import ReactAnimatedWeather from "react-animated-weather";
 
-
 function Forcast(props) {
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
   const [weather, setWeather] = useState({});
 
   const search = useCallback((city) => {
+    const searchQuery = city !== "[object Object]" ? city : query;
     axios
       .get(
-        `${apiKeys.base}weather?q=${
-          city !== "[object Object]" ? city : query
-        }&units=metric&APPID=${apiKeys.key}`
+        `${apiKeys.base}weather?q=${searchQuery}&units=metric&APPID=${apiKeys.key}`
       )
       .then((response) => {
         setWeather(response.data);
         setQuery("");
+        setError("");
       })
       .catch((error) => {
         console.log(error);
         setWeather(null);
         setQuery("");
-        setError({ message: "Not Found", query: query });
+        setError({ message: "Not Found", query: searchQuery });
       });
   }, [query]);
 
@@ -37,6 +36,12 @@ function Forcast(props) {
   useEffect(() => {
     search("Delhi");
   }, [search]);
+
+  const handleSearch = () => {
+    if (query.trim() !== "") {
+      search(query);
+    }
+  };
 
   return (
     <div className="forecast">
@@ -61,7 +66,7 @@ function Forcast(props) {
           <div className="img-box">
             <img
               src="https://images.avishkaar.cc/workflow/newhp/search-white.png"
-              onClick={() => search(query)}
+              onClick={handleSearch}
               alt="search"
             />
           </div>
@@ -110,5 +115,6 @@ function Forcast(props) {
 }
 
 export default Forcast;
+
 
 
