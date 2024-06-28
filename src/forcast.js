@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import apiKeys from "./apiKeys";
 import ReactAnimatedWeather from "react-animated-weather";
@@ -8,24 +8,31 @@ function Forcast(props) {
   const [error, setError] = useState("");
   const [weather, setWeather] = useState({});
 
-  const search = useCallback((city) => {
-    const searchQuery = city !== "[object Object]" ? city : query;
+  const search = (city) => {
     axios
       .get(
-        `${apiKeys.base}weather?q=${searchQuery}&units=metric&APPID=${apiKeys.key}`
+        `${apiKeys.base}weather?q=${
+          city !== "[object Object]" ? city : query
+        }&units=metric&APPID=${apiKeys.key}`
       )
       .then((response) => {
         setWeather(response.data);
         setQuery("");
-        setError("");
       })
       .catch((error) => {
         console.log(error);
         setWeather(null);
         setQuery("");
-        setError({ message: "Not Found", query: searchQuery });
+        setError({ message: "Not Found", query: query });
       });
-  }, [query]);
+  };
+
+  function checkTime(i) {
+    if (i < 10) {
+      i = "0" + i;
+    }
+    return i;
+  }
 
   const defaults = {
     color: "white",
@@ -35,13 +42,7 @@ function Forcast(props) {
 
   useEffect(() => {
     search("Delhi");
-  }, [search]);
-
-  const handleSearch = () => {
-    if (query.trim() !== "") {
-      search(query);
-    }
-  };
+  }, []);
 
   return (
     <div className="forecast">
@@ -66,8 +67,8 @@ function Forcast(props) {
           <div className="img-box">
             <img
               src="https://images.avishkaar.cc/workflow/newhp/search-white.png"
-              onClick={handleSearch}
-              alt="search"
+              onClick={() => search(query)}
+              alt="Search"
             />
           </div>
         </div>
@@ -81,26 +82,32 @@ function Forcast(props) {
                 <img
                   className="temp"
                   src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}.png`}
-                  alt="weather icon"
+                  alt="Weather Icon"
                 />
               </li>
               <li>
-                Temperature
+                Temperature{" "}
                 <span className="temp">
                   {Math.round(weather.main.temp)}°C ({weather.weather[0].main})
                 </span>
               </li>
               <li>
-                Humidity
-                <span className="temp">{Math.round(weather.main.humidity)}%</span>
+                Humidity{" "}
+                <span className="temp">
+                  {Math.round(weather.main.humidity)}%
+                </span>
               </li>
               <li>
-                Visibility
-                <span className="temp">{Math.round(weather.visibility)} mi</span>
+                Visibility{" "}
+                <span className="temp">
+                  {Math.round(weather.visibility)} mi
+                </span>
               </li>
               <li>
-                Wind Speed
-                <span className="temp">{Math.round(weather.wind.speed)} Km/h</span>
+                Wind Speed{" "}
+                <span className="temp">
+                  {Math.round(weather.wind.speed)} Km/h
+                </span>
               </li>
             </div>
           ) : (
@@ -115,6 +122,3 @@ function Forcast(props) {
 }
 
 export default Forcast;
-
-
-
