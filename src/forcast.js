@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import apiKeys from "./apiKeys";
 import ReactAnimatedWeather from "react-animated-weather";
+
 
 function Forcast(props) {
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
   const [weather, setWeather] = useState({});
 
-  const search = (city) => {
+  const search = useCallback((city) => {
     axios
       .get(
         `${apiKeys.base}weather?q=${
@@ -25,14 +26,7 @@ function Forcast(props) {
         setQuery("");
         setError({ message: "Not Found", query: query });
       });
-  };
-
-  // function checkTime(i) {
-  //   if (i < 10) {
-  //     i = "0" + i;
-  //   }
-  //   return i;
-  // }
+  }, [query]);
 
   const defaults = {
     color: "white",
@@ -68,7 +62,7 @@ function Forcast(props) {
             <img
               src="https://images.avishkaar.cc/workflow/newhp/search-white.png"
               onClick={() => search(query)}
-              alt="Search"
+              alt="search"
             />
           </div>
         </div>
@@ -82,32 +76,26 @@ function Forcast(props) {
                 <img
                   className="temp"
                   src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}.png`}
-                  alt="Weather Icon"
+                  alt="weather icon"
                 />
               </li>
               <li>
-                Temperature{" "}
+                Temperature
                 <span className="temp">
                   {Math.round(weather.main.temp)}°C ({weather.weather[0].main})
                 </span>
               </li>
               <li>
-                Humidity{" "}
-                <span className="temp">
-                  {Math.round(weather.main.humidity)}%
-                </span>
+                Humidity
+                <span className="temp">{Math.round(weather.main.humidity)}%</span>
               </li>
               <li>
-                Visibility{" "}
-                <span className="temp">
-                  {Math.round(weather.visibility)} mi
-                </span>
+                Visibility
+                <span className="temp">{Math.round(weather.visibility)} mi</span>
               </li>
               <li>
-                Wind Speed{" "}
-                <span className="temp">
-                  {Math.round(weather.wind.speed)} Km/h
-                </span>
+                Wind Speed
+                <span className="temp">{Math.round(weather.wind.speed)} Km/h</span>
               </li>
             </div>
           ) : (
@@ -122,4 +110,5 @@ function Forcast(props) {
 }
 
 export default Forcast;
+
 
