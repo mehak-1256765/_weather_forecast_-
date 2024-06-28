@@ -27,12 +27,12 @@ function Forcast(props) {
       });
   };
 
-  function checkTime(i) {
-    if (i < 10) {
-      i = "0" + i;
-    }
-    return i;
-  }
+  // function checkTime(i) {
+  //   if (i < 10) {
+  //     i = "0" + i;
+  //   }
+  //   return i;
+  // }
 
   const defaults = {
     color: "white",
@@ -42,7 +42,7 @@ function Forcast(props) {
 
   useEffect(() => {
     search("Delhi");
-  }, []);
+  }, [search]);
 
   return (
     <div className="forecast">
